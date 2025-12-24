@@ -1,10 +1,19 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+import { storage } from '../services/storageService';
+import { BlogPost } from '../types';
 
 const Home: React.FC = () => {
   const { t } = useLanguage();
+  const [recentPosts, setRecentPosts] = useState<BlogPost[]>([]);
+
+  useEffect(() => {
+    // Get the 2 most recent posts
+    const allPosts = storage.getPosts();
+    setRecentPosts(allPosts.slice(0, 2));
+  }, []);
 
   return (
     <div className="space-y-12">
@@ -31,17 +40,27 @@ const Home: React.FC = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[1, 2].map(i => (
-              <div key={i} className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-                <img src={`https://picsum.photos/seed/${i+10}/400/250`} className="w-full h-40 object-cover rounded-xl mb-4" alt="Post" />
-                <div className="text-[10px] text-indigo-500 font-semibold mb-2 uppercase tracking-wide">TRAVEL • 2 DAYS AGO</div>
-                <h4 className="text-lg font-bold text-slate-800 mb-2">Exploring Hidden Cafes in Kyoto</h4>
-                <p className="text-slate-500 text-sm line-clamp-2 mb-4">The scent of roasted hojicha filled the air as I stepped into this century-old machiya...</p>
-                <Link to="/thoughts" className="text-slate-800 text-sm font-bold flex items-center gap-2 group">
+            {recentPosts.length > 0 ? recentPosts.map((post) => (
+              <div key={post.id} className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 hover:shadow-md transition-shadow h-full flex flex-col">
+                <img 
+                  src={post.coverImage || `https://picsum.photos/seed/${post.id}/400/250`} 
+                  className="w-full h-40 object-cover rounded-xl mb-4" 
+                  alt={post.title} 
+                />
+                <div className="text-[10px] text-indigo-500 font-semibold mb-2 uppercase tracking-wide">
+                  {post.category || 'LIFE'} • {post.date}
+                </div>
+                <h4 className="text-lg font-bold text-slate-800 mb-2 line-clamp-1">{post.title}</h4>
+                <p className="text-slate-500 text-sm line-clamp-2 mb-4 flex-1">{post.excerpt}</p>
+                <Link to="/thoughts" className="text-slate-800 text-sm font-bold flex items-center gap-2 group mt-auto">
                   {t('thoughts.read_more')} <i className="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
                 </Link>
               </div>
-            ))}
+            )) : (
+               <div className="col-span-full py-12 text-center text-slate-400 bg-white rounded-2xl border border-dashed border-slate-200">
+                No recent thoughts yet.
+              </div>
+            )}
           </div>
         </div>
 
@@ -68,9 +87,9 @@ const Home: React.FC = () => {
           <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-3xl p-6 text-white">
             <h4 className="font-bold mb-2">{t('home.ai_assistant')}</h4>
             <p className="text-[11px] text-indigo-100 mb-4">{t('home.ai_desc')}</p>
-            <button className="w-full bg-white text-indigo-600 font-bold py-2 rounded-xl text-[12px] shadow-lg hover:bg-indigo-50 transition-colors">
+            <Link to="/thoughts" className="block w-full bg-white text-indigo-600 font-bold py-2 rounded-xl text-[12px] shadow-lg hover:bg-indigo-50 transition-colors text-center">
               {t('home.ai_btn')}
-            </button>
+            </Link>
           </div>
         </div>
       </div>

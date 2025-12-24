@@ -157,7 +157,11 @@ const Thoughts: React.FC = () => {
           <article key={post.id} className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-100 hover:shadow-md transition-shadow group cursor-pointer">
             <div className="flex flex-col md:flex-row gap-8">
               <div className="w-full md:w-1/3 h-48 md:h-64 rounded-2xl overflow-hidden bg-slate-100">
-                <img src={`https://picsum.photos/seed/${post.id}/800/600`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={post.title} />
+                <img 
+                  src={post.coverImage || `https://picsum.photos/seed/${post.id}/800/600`} 
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                  alt={post.title} 
+                />
               </div>
               <div className="flex-1 flex flex-col">
                 <div className="flex gap-2 mb-3">
@@ -166,10 +170,10 @@ const Thoughts: React.FC = () => {
                   ))}
                 </div>
                 <h3 className="text-2xl font-bold text-slate-800 mb-3 group-hover:text-indigo-600 transition-colors">{post.title}</h3>
-                <p className="text-slate-500 mb-6 flex-1 line-clamp-3">{post.excerpt}</p>
+                <p className="text-slate-500 mb-6 flex-1 line-clamp-3 font-medium leading-relaxed">{post.excerpt}</p>
                 <div className="flex items-center justify-between mt-auto">
                   <span className="text-[10px] text-slate-400 font-medium">{post.date}</span>
-                  <div className="flex items-center gap-2 text-slate-700 font-bold text-sm">
+                  <div className="flex items-center gap-2 text-indigo-600 font-bold text-sm">
                     {t('thoughts.read_more')} <i className="fa-solid fa-chevron-right text-[10px]"></i>
                   </div>
                 </div>
