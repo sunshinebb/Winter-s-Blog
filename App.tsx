@@ -8,6 +8,7 @@ import Thoughts from './pages/Thoughts';
 import Moments from './pages/Moments';
 import Gallery from './pages/Gallery';
 import About from './pages/About';
+import Admin from './pages/Admin';
 
 const App: React.FC = () => {
   return (
@@ -20,6 +21,7 @@ const App: React.FC = () => {
             <Route path="/moments" element={<Moments />} />
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/about" element={<About />} />
+            <Route path="/admin" element={<Admin />} />
           </Routes>
         </Layout>
       </HashRouter>

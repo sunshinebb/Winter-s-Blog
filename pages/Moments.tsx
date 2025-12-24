@@ -1,16 +1,27 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { generateMoodEmoji } from '../services/geminiService';
 import { useLanguage } from '../contexts/LanguageContext';
+import { storage } from '../services/storageService';
+import { Moment } from '../types';
 
 const Moments: React.FC = () => {
   const { t } = useLanguage();
   const [momentText, setMomentText] = useState('');
   const [analyzing, setAnalyzing] = useState(false);
-  const [moments, setMoments] = useState([
-    { id: '1', text: "Just saw the most beautiful sunset over the mountains. Life is good.", date: "Today, 6:45 PM", mood: "🌅", location: "Blue Ridge Parkway" },
-    { id: '2', text: "Coffee spill on my favorite white shirt... classic Monday.", date: "Mon, 9:20 AM", mood: "☕️", location: "Downtown Cafe" },
-  ]);
+  const [moments, setMoments] = useState<Moment[]>([]);
+
+  useEffect(() => {
+    const data = storage.getMoments();
+    if (data.length === 0) {
+      setMoments([
+        { id: '1', text: "Just saw the most beautiful sunset over the mountains. Life is good.", date: "Today, 6:45 PM", mood: "🌅", location: "Blue Ridge Parkway" },
+        { id: '2', text: "Coffee spill on my favorite white shirt... classic Monday.", date: "Mon, 9:20 AM", mood: "☕️", location: "Downtown Cafe" },
+      ]);
+    } else {
+      setMoments(data);
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,13 +30,14 @@ const Moments: React.FC = () => {
     setAnalyzing(true);
     try {
       const mood = await generateMoodEmoji(momentText);
-      const newMoment = {
+      const newMoment: Moment = {
         id: Date.now().toString(),
         text: momentText,
-        date: "Just now",
+        date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         mood: mood || "✨",
         location: "Current Location"
       };
+      storage.saveMoment(newMoment);
       setMoments([newMoment, ...moments]);
       setMomentText('');
     } finally {

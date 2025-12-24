@@ -14,6 +14,7 @@ const Sidebar = ({ isOpen, toggle }: { isOpen: boolean; toggle: () => void }) =>
     { name: t('nav.moments'), path: '/moments', icon: 'fa-camera-retro' },
     { name: t('nav.gallery'), path: '/gallery', icon: 'fa-images' },
     { name: t('nav.about'), path: '/about', icon: 'fa-user' },
+    { name: t('nav.admin'), path: '/admin', icon: 'fa-gauge-high' },
   ];
 
   return (
@@ -34,7 +35,7 @@ const Sidebar = ({ isOpen, toggle }: { isOpen: boolean; toggle: () => void }) =>
           <p className="text-xs text-slate-400 mt-1 uppercase tracking-widest">Digital Sanctuary</p>
         </div>
 
-        <nav className="mt-6 px-4 space-y-2 flex-1">
+        <nav className="mt-6 px-4 space-y-2 flex-1 overflow-y-auto">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
@@ -56,16 +57,16 @@ const Sidebar = ({ isOpen, toggle }: { isOpen: boolean; toggle: () => void }) =>
         </nav>
 
         <div className="p-6 border-t border-slate-100">
-          <div className="flex bg-slate-100 p-1 rounded-xl mb-6">
+          <div className="flex bg-slate-100 p-1 rounded-xl mb-6 text-[10px]">
             <button 
               onClick={() => setLanguage('zh')}
-              className={`flex-1 text-[10px] font-bold py-1.5 rounded-lg transition-all ${language === 'zh' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-400'}`}
+              className={`flex-1 font-bold py-1.5 rounded-lg transition-all ${language === 'zh' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-400'}`}
             >
               中文
             </button>
             <button 
               onClick={() => setLanguage('en')}
-              className={`flex-1 text-[10px] font-bold py-1.5 rounded-lg transition-all ${language === 'en' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-400'}`}
+              className={`flex-1 font-bold py-1.5 rounded-lg transition-all ${language === 'en' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-400'}`}
             >
               EN
             </button>
@@ -91,7 +92,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   const { t } = useLanguage();
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
+    <div className="min-h-screen flex flex-col md:flex-row bg-[#f8fafc]">
       <Sidebar isOpen={sidebarOpen} toggle={() => setSidebarOpen(!sidebarOpen)} />
       
       <main className="flex-1 md:ml-64 p-4 md:p-8">

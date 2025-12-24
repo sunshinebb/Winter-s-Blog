@@ -1,20 +1,34 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# ZenLog - 个人 AI 博客系统
 
-# Run and deploy your AI Studio app
+ZenLog 是一个基于 React 和 Google Gemini API 构建的现代化、极简主义个人博客平台。它不仅是一个内容展示窗口，更是一个集成了 AI 创作辅助的数字避难所。
 
-This contains everything you need to run your app locally.
+## 🌟 核心特性
 
-View your app in AI Studio: https://ai.studio/apps/drive/1x2dHKmCRlW5oGDR7uD-eBw8tKIgNBPY2
+- **极简设计**: 响应式侧边栏布局，清新的视觉体验，专注于内容。
+- **AI 赋能**:
+  - **创作助手**: 输入主题，AI 自动生成博客大纲。
+  - **情绪分析**: 自动识别日记内容并匹配相应的心情 Emoji。
+  - **封面生成**: 根据博文内容自动生成极简风格的封面图。
+- **多语言支持**: 完美支持中英文无缝切换。
+- **富媒体展示**: 包含长篇思考 (Thoughts)、短动态 (Moments) 以及图片/视频画廊 (Gallery)。
+- **管理后台**: 集成的管理面板，支持增删改查博客内容。
 
-## Run Locally
+## 🚀 后续开发计划
 
-**Prerequisites:**  Node.js
+1. **数据库集成**:
+   - 当前使用 `localStorage` 进行持久化。后续计划接入 Firebase 或 Supabase 实现真正的云端存储。
+2. **身份验证**:
+   - 增加管理后台的登录验证 (Auth)，确保只有博主可以编辑内容。
+3. **富文本编辑器**:
+   - 在后台引入 Markdown 渲染或 TipTap 编辑器，支持更丰富的内容排版。
+4. **评论系统**:
+   - 集成 Giscus 或自定义评论模块，增加访客互动。
+5. **SEO 优化**:
+   - 使用 React Helmet 管理元数据，提升搜索引擎友好度。
 
+## 🛠️ 技术栈
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+- **前端**: React 19, Tailwind CSS, React Router 7
+- **AI**: Google Gemini SDK (@google/genai)
+- **图标**: Font Awesome 6
+- **构建**: ESM 模块化加载
