@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { generateBlogOutline } from '../services/geminiService';
+import { generateBlogOutline, summarizeContent } from '../services/geminiService';
 import { useLanguage } from '../contexts/LanguageContext';
 import { storage } from '../services/storageService';
 import { BlogPost } from '../types';
@@ -12,6 +12,7 @@ const Thoughts: React.FC = () => {
   const [content, setContent] = useState('');
   const [outline, setOutline] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
   const [posts, setPosts] = useState<BlogPost[]>([]);
 
   useEffect(() => {
@@ -31,20 +32,32 @@ const Thoughts: React.FC = () => {
     }
   };
 
-  const handlePublish = () => {
+  const handlePublish = async () => {
     if (!topic || !content) return;
+    setIsPublishing(true);
+    
+    let excerpt = '';
+    try {
+      // Use AI for a better excerpt than just slicing
+      excerpt = await summarizeContent(content) || content.slice(0, 150) + '...';
+    } catch (error) {
+      excerpt = content.slice(0, 150) + '...';
+    }
+
     const newPost: BlogPost = {
       id: Date.now().toString(),
       title: topic,
-      excerpt: content.slice(0, 100) + '...',
+      excerpt: excerpt,
       content: content,
       date: new Date().toLocaleDateString(),
       tags: ['Life'],
       category: 'General'
     };
+    
     storage.savePost(newPost);
     setPosts(storage.getPosts());
     setIsCreating(false);
+    setIsPublishing(false);
     setTopic('');
     setContent('');
     setOutline('');
@@ -70,7 +83,10 @@ const Thoughts: React.FC = () => {
           <div className="bg-white w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300">
             <div className="p-6 border-b border-slate-100 flex justify-between items-center">
               <h3 className="text-xl font-bold text-slate-800">Draft New Thought</h3>
-              <button onClick={() => { setIsCreating(false); setOutline(''); setTopic(''); }} className="text-slate-400 hover:text-slate-600">
+              <button 
+                onClick={() => { setIsCreating(false); setOutline(''); setTopic(''); }} 
+                className="text-slate-400 hover:text-slate-600"
+              >
                 <i className="fa-solid fa-xmark text-xl"></i>
               </button>
             </div>
@@ -110,8 +126,27 @@ const Thoughts: React.FC = () => {
               />
             </div>
             <div className="p-6 bg-slate-50 flex justify-end gap-3">
-              <button onClick={() => setIsCreating(false)} className="px-4 py-2 text-slate-600 font-semibold">Cancel</button>
-              <button onClick={handlePublish} className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold shadow-md hover:bg-indigo-700 transition-all">Publish Post</button>
+              <button 
+                onClick={() => setIsCreating(false)} 
+                className="px-4 py-2 text-slate-600 font-semibold"
+                disabled={isPublishing}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handlePublish} 
+                disabled={isPublishing || !topic || !content}
+                className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold shadow-md hover:bg-indigo-700 transition-all disabled:opacity-50 flex items-center gap-2"
+              >
+                {isPublishing ? (
+                  <>
+                    <i className="fa-solid fa-circle-notch animate-spin"></i>
+                    Publishing...
+                  </>
+                ) : (
+                  'Publish Post'
+                )}
+              </button>
             </div>
           </div>
         </div>
